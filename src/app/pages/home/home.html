@@ -1,0 +1,128 @@
+<div id="home">
+
+  <div class="topbar">
+    <div class="topbar-logo">MAZE HUNTER</div>
+    <nav class="topbar-nav">
+      <a (click)="scrollTo('hero')">Accueil</a>
+      <a (click)="scrollTo('about')">À propos</a>
+      <a (click)="scrollTo('contact')">Contact</a>
+    </nav>
+    <div class="topbar-actions">
+      <button class="topbar-btn" (click)="goToLogin()">Connexion</button>
+      <button class="topbar-btn topbar-btn-primary" (click)="goToSignup()">S'inscrire</button>
+      <button class="topbar-btn topbar-btn-admin" (click)="goToAdmin()" title="Espace administrateur">Admin</button>
+    </div>
+    <button class="topbar-burger" (click)="menuOpen = !menuOpen" aria-label="Menu">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+
+  <div class="mobile-menu" [class.open]="menuOpen">
+    <a (click)="scrollTo('hero'); menuOpen = false">Accueil</a>
+    <a (click)="scrollTo('about'); menuOpen = false">À propos</a>
+    <a (click)="scrollTo('contact'); menuOpen = false">Contact</a>
+    <div class="mobile-menu-actions">
+      <button class="topbar-btn" (click)="goToLogin()">Connexion</button>
+      <button class="topbar-btn topbar-btn-primary" (click)="goToSignup()">S'inscrire</button>
+      <button class="topbar-btn topbar-btn-admin" (click)="goToAdmin()">Admin</button>
+    </div>
+  </div>
+
+  <!-- ============ HERO ============ -->
+  <section id="hero" class="hero">
+    <div id="home-bg"></div>
+    <canvas #homeCanvas id="home-canvas"></canvas>
+    <div id="home-embers"></div>
+
+    <div id="home-ui">
+      <div id="home-title">MAZE HUNTER</div>
+      <div id="home-subtitle">King Kong 2005 Protocol</div>
+      <p class="hero-tagline">La chasse aux bugs devient une aventure épique en 3D.</p>
+      <div class="btn-group">
+        <button class="btn-main" (click)="goToTesting()">INITIATE HUNT</button>
+        <button class="btn-ghost" (click)="scrollTo('about')">Découvrir le concept</button>
+      </div>
+    </div>
+
+    <div class="scroll-cue" (click)="scrollTo('about')">
+      <span></span>
+    </div>
+  </section>
+
+  <!-- ============ ABOUT ============ -->
+  <section id="about" class="section about">
+    <div class="section-glow"></div>
+
+    <div class="section-inner about-grid">
+      <div class="about-content">
+        <div class="eyebrow">À propos</div>
+        <h2 class="section-title">Un jeu vidéo. Un outil QA.</h2>
+        <p class="lead">
+          MAZE HUNTER transforme le test logiciel en chasse immersive : vous incarnez King Kong et traquez
+          les bugs dans un labyrinthe 3D. Chaque bug capturé devient un vrai cas de test, validé en direct
+          dans un dashboard QA professionnel.
+        </p>
+        <p class="lead">
+          Simple, rapide, sans installation — testez en jouant.
+        </p>
+      </div>
+
+      <div class="about-media">
+        <img src="assets/images/kong-concept.png" alt="King Kong dans le labyrinthe Maze Hunter" />
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ CONTACT ============ -->
+  <section id="contact" class="section contact">
+    <div class="section-glow"></div>
+    <div class="section-inner contact-grid">
+      <div class="contact-info">
+        <div class="eyebrow">Contact</div>
+        <h2 class="section-title">Prêt à rejoindre la chasse ?</h2>
+        <p class="lead">Une question, une démo ? Écrivez-nous.</p>
+
+        <ul class="contact-list">
+          <li><span class="contact-label">Email</span> contact&#64;mazehunter.io</li>
+          <li><span class="contact-label">Web</span> www.mazehunter.io</li>
+          <li><span class="contact-label">Adresse</span> Tunis, Tunisie</li>
+        </ul>
+
+        <div class="contact-social">
+          <a href="#" title="LinkedIn">LinkedIn</a>
+          <a href="#" title="GitHub">GitHub</a>
+          <a href="#" title="X / Twitter">X</a>
+        </div>
+      </div>
+
+      <form class="contact-form" [formGroup]="contactForm" (ngSubmit)="onContactSubmit()">
+        <div class="form-row">
+          <label>Nom</label>
+          <input type="text" formControlName="name" placeholder="Votre nom" />
+        </div>
+        <div class="form-row">
+          <label>Email</label>
+          <input type="email" formControlName="email" placeholder="vous&#64;exemple.com" />
+        </div>
+        <div class="form-row">
+          <label>Sujet</label>
+          <input type="text" formControlName="subject" placeholder="Démo, partenariat..." />
+        </div>
+        <div class="form-row">
+          <label>Message</label>
+          <textarea formControlName="message" rows="4" placeholder="Votre message..."></textarea>
+        </div>
+        <button type="submit" class="btn-main btn-submit">ENVOYER</button>
+        <p class="form-success" *ngIf="contactSent">Message envoyé. Nous revenons vers vous rapidement.</p>
+      </form>
+    </div>
+  </section>
+
+  <footer class="site-footer">
+    <div class="footer-inner">
+      <span class="footer-logo">MAZE HUNTER</span>
+      <span class="footer-copy">© 2026 Maze Hunter — Tous droits réservés.</span>
+    </div>
+  </footer>
+
+</div>

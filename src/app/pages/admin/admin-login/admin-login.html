@@ -1,0 +1,28 @@
+<div class="overlay"></div>
+
+<div class="auth-container">
+  <div class="logo-area">
+    <span class="icon">◆</span>
+    <h1>MAZE HUNTER</h1>
+    <p>// ADMIN CONTROL PANEL //</p>
+  </div>
+
+  <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+    <div class="form-group">
+      <label>Email administrateur</label>
+      <input type="email" formControlName="email" placeholder="admin@maze.com" required>
+    </div>
+    <div class="form-group">
+      <label>Mot de passe</label>
+      <input type="password" formControlName="password" placeholder="••••••••" required>
+    </div>
+    <div class="error-msg" *ngIf="errorMessage">{{ errorMessage }}</div>
+    <button class="btn-primary" type="submit">Accéder au panel</button>
+  </form>
+
+  <button class="btn-secondary" (click)="router.navigate(['/admin/signup'])">Créer un compte admin</button>
+
+  <div class="auth-link">
+    <a (click)="router.navigate(['/login'])">← Retour à l'espace testeur</a>
+  </div>
+</div>

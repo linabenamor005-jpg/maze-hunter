@@ -1,0 +1,10 @@
+/* You can add global styles to this file, and also import other style files */
+
+/* Reset global — restaure le comportement des fichiers HTML statiques d'origine
+   (chaque page avait son propre "* { margin:0; padding:0 }" qui, en Angular,
+   ne peut plus atteindre <html>/<body> à cause de l'encapsulation de vue). */
+html, body {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+}

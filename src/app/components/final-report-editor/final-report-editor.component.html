@@ -1,0 +1,215 @@
+<div class="doc-page" [formGroup]="finalForm">
+
+  <!-- ============ EN-TÊTE ============ -->
+  <div class="title-page">
+    <div class="doc-header-flag">FINAL TEST VALIDATION REPORT — PRO-PFE</div>
+
+    <div class="doc-title">
+      <h1>Final Test Validation Report</h1>
+      <p class="doc-subtitle">PRO-PFE Project</p>
+    </div>
+
+    <div class="identity-grid">
+      <label>Team</label>
+      <input class="student-input" formControlName="groupNumber" placeholder="[Group Number]">
+      <label>Project</label>
+      <input class="student-input" formControlName="projectTitle" placeholder="[Project Title]">
+    </div>
+
+    <div class="members-block" formArrayName="members">
+      <label>Students</label>
+      <div class="chip-row">
+        <div class="chip-input" *ngFor="let member of members.controls; let i=index">
+          <input class="student-input" [formControlName]="i" placeholder="Name {{ i + 1 }}">
+        </div>
+      </div>
+      <button type="button" class="btn-ghost" (click)="addMember()">+ Add member</button>
+    </div>
+
+    <div class="toolbar">
+      <button type="button" class="btn-import" (click)="importRealData()" [disabled]="importing">
+        {{ importing ? '⏳ Import en cours...' : '⬇ Importer les résultats réels (Bug Tracker)' }}
+      </button>
+      <button type="button" class="btn-primary" (click)="prefillProjectDefaults()">⚡ Pré-remplir (outils/environnement)</button>
+      <button type="button" class="btn-secondary" (click)="exportPDF()">📄 Exporter en PDF</button>
+      <button type="button" class="btn-secondary" (click)="saveTemplate()">💾 Sauvegarder (JSON)</button>
+    </div>
+    <div class="import-message" *ngIf="importMessage">{{ importMessage }}</div>
+  </div>
+
+  <!-- ============ INTRODUCTION ============ -->
+  <section class="section">
+    <h2><span class="sec-num">1</span> Introduction</h2>
+    <div class="important-box">
+      Unlike the PVT, this document contains <strong>REAL RESULTS, EVIDENCE, and ANALYSIS</strong>.
+    </div>
+    <p class="field-label">Project Context:</p>
+    <textarea class="student-input" formControlName="projectContext" rows="4" placeholder="Briefly describe your system, tested features, and execution period."></textarea>
+  </section>
+
+  <!-- ============ METHODOLOGY ============ -->
+  <section class="section">
+    <h2><span class="sec-num">2</span> Test Execution Methodology</h2>
+    <h3>2.1 Environment</h3>
+    <textarea class="student-input" formControlName="environment" rows="2" placeholder="Describe where tests were executed: local server, cloud, production-like environment"></textarea>
+
+    <h3>2.2 Tools Used</h3>
+    <div formArrayName="tools" class="list-editor">
+      <div class="list-row" *ngFor="let tool of tools.controls; let i=index">
+        <input class="student-input" [formControlName]="i" placeholder="Tool name">
+      </div>
+    </div>
+    <button type="button" class="btn-ghost" (click)="addTool()">+ Add tool</button>
+
+    <h3>2.3 Execution Approach</h3>
+    <select class="student-input select-input" formControlName="executionApproach">
+      <option value="Manual">Manual</option>
+      <option value="Automated">Automated</option>
+      <option value="Hybrid">Hybrid</option>
+    </select>
+    <p class="field-label">Explain how tests were executed in practice:</p>
+    <textarea class="student-input" formControlName="executionDescription" rows="3"></textarea>
+  </section>
+
+  <!-- ============ SUMMARY ============ -->
+  <section class="section">
+    <h2><span class="sec-num">3</span> Test Execution Summary</h2>
+    <table class="summary-table">
+      <thead><tr><th>Total Tests</th><th>Passed</th><th>Failed</th><th>Success Rate (%)</th></tr></thead>
+      <tbody>
+        <tr>
+          <td><input class="student-input center" formControlName="totalTests" type="number"></td>
+          <td><input class="student-input center pass" formControlName="passed" type="number"></td>
+          <td><input class="student-input center fail" formControlName="failed" type="number"></td>
+          <td><input class="student-input center" formControlName="successRate" type="number" step="0.1"></td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
+
+  <!-- ============ DETAILED RESULTS ============ -->
+  <section class="section">
+    <h2><span class="sec-num">4</span> Detailed Test Results</h2>
+    <div class="important-box">Each test must show EXPECTED vs ACTUAL result.</div>
+
+    <h3>4.1 Functional Testing</h3>
+    <table class="results-table" formArrayName="functionalResults">
+      <thead><tr><th>Test ID</th><th>Expected</th><th>Actual</th><th>Status</th><th></th></tr></thead>
+      <tbody>
+        <tr *ngFor="let res of functionalResults.controls; let i=index" [formGroupName]="i">
+          <td><input class="student-input" formControlName="id" placeholder="TC-01"></td>
+          <td><input class="student-input" formControlName="expected" placeholder="Expected result"></td>
+          <td><input class="student-input" formControlName="actual" placeholder="Actual result"></td>
+          <td>
+            <select class="student-input" formControlName="status">
+              <option value="PASS">PASS</option>
+              <option value="FAIL">FAIL</option>
+            </select>
+          </td>
+          <td><button type="button" class="btn-danger" (click)="removeFunctionalResult(i)">✕</button></td>
+        </tr>
+      </tbody>
+    </table>
+    <button type="button" class="btn-ghost small" (click)="addFunctionalResult()">+ Add Result</button>
+
+    <p class="field-label">Analysis:</p>
+    <textarea class="student-input" formControlName="functionalAnalysis" rows="3" placeholder="Explain if results match expectations or not."></textarea>
+
+    <h3>4.2 Security Testing</h3>
+    <p class="field-label">What was tested:</p>
+    <textarea class="student-input" formControlName="securityTested" rows="2" placeholder="Tested vulnerabilities: SQL Injection, XSS, etc."></textarea>
+    <p class="field-label">Results:</p>
+    <textarea class="student-input" formControlName="securityResults" rows="3" placeholder="Describe if system resisted attacks"></textarea>
+
+    <h3>4.3 Performance Testing</h3>
+    <p class="field-label">Scenario:</p>
+    <input class="student-input" formControlName="performanceScenario" placeholder="e.g., 500 users simulated">
+    <p class="field-label">Average Response Time:</p>
+    <input class="student-input" formControlName="performanceAvgResponse" placeholder="e.g., 120 ms">
+    <p class="field-label">Error Rate:</p>
+    <input class="student-input" formControlName="performanceErrorRate" placeholder="e.g., 2%">
+    <p class="field-label">Interpretation:</p>
+    <textarea class="student-input" formControlName="performanceInterpretation" rows="3" placeholder="Explain system limits and behavior"></textarea>
+  </section>
+
+  <!-- ============ DEFECT ANALYSIS ============ -->
+  <section class="section">
+    <h2><span class="sec-num">5</span> Defect Analysis</h2>
+    <table class="results-table" formArrayName="defects">
+      <thead><tr><th>ID</th><th>Description</th><th>Severity</th><th>Status</th><th></th></tr></thead>
+      <tbody>
+        <tr *ngFor="let def of defects.controls; let i=index" [formGroupName]="i">
+          <td><input class="student-input" formControlName="id" placeholder="BUG-01"></td>
+          <td><input class="student-input" formControlName="description" placeholder="Short description"></td>
+          <td>
+            <select class="student-input" formControlName="severity">
+              <option value="Critical">Critical</option>
+              <option value="Major">Major</option>
+              <option value="Minor">Minor</option>
+            </select>
+          </td>
+          <td>
+            <select class="student-input" formControlName="status">
+              <option value="Open">Open</option>
+              <option value="Fixed">Fixed</option>
+              <option value="Reopened">Reopened</option>
+            </select>
+          </td>
+          <td><button type="button" class="btn-danger" (click)="removeDefect(i)">✕</button></td>
+        </tr>
+      </tbody>
+    </table>
+    <button type="button" class="btn-ghost small" (click)="addDefect()">+ Add Defect</button>
+
+    <div class="legend">
+      <span class="sev-badge critical">Critical</span> system unusable &nbsp;•&nbsp;
+      <span class="sev-badge major">Major</span> important issue &nbsp;•&nbsp;
+      <span class="sev-badge minor">Minor</span> small issue
+    </div>
+  </section>
+
+  <!-- ============ METRICS ============ -->
+  <section class="section">
+    <h2><span class="sec-num">6</span> Quality Metrics</h2>
+    <ul class="static-list">
+      <li>Success rate</li><li>Number of defects</li><li>Performance thresholds</li>
+    </ul>
+    <textarea class="student-input" formControlName="metrics" rows="4" placeholder="Provide your metrics and interpret them (coverage, stability, etc.)"></textarea>
+  </section>
+
+  <!-- ============ DISCUSSION ============ -->
+  <section class="section">
+    <h2><span class="sec-num">7</span> Discussion and Interpretation</h2>
+    <textarea class="student-input" formControlName="discussion" rows="6" placeholder="Is the system stable? Is it secure? What are the risks?"></textarea>
+  </section>
+
+  <!-- ============ RECOMMENDATIONS ============ -->
+  <section class="section" formArrayName="recommendations">
+    <h2><span class="sec-num">8</span> Recommendations</h2>
+    <div class="list-editor">
+      <div class="list-row" *ngFor="let rec of recommendations.controls; let i=index">
+        <input class="student-input" [formControlName]="i" placeholder="Recommendation">
+        <button type="button" class="btn-danger" (click)="removeRecommendation(i)">✕</button>
+      </div>
+    </div>
+    <button type="button" class="btn-ghost small" (click)="addRecommendation()">+ Add Recommendation</button>
+  </section>
+
+  <!-- ============ CONCLUSION ============ -->
+  <section class="section">
+    <h2><span class="sec-num">9</span> Conclusion</h2>
+    <textarea class="student-input" formControlName="conclusion" rows="4" placeholder="Summarize system quality and readiness for deployment."></textarea>
+  </section>
+
+  <!-- ============ ANNEX ============ -->
+  <section class="section">
+    <h2><span class="sec-num">A</span> Annex — Evidence</h2>
+    <div class="important-box">No evidence = test not valid. Include screenshots, logs, code snippets, API responses.</div>
+    <textarea class="student-input" formControlName="evidence" rows="4" placeholder="Describe or list evidence (screenshots, logs, etc.)"></textarea>
+  </section>
+
+  <div class="actions no-print">
+    <button (click)="exportPDF()">📄 Exporter en PDF</button>
+    <button (click)="saveTemplate()">💾 Sauvegarder (JSON)</button>
+  </div>
+</div>

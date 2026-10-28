@@ -1,0 +1,202 @@
+<div class="doc-page" [formGroup]="pvtForm">
+
+  <!-- ============ PAGE DE GARDE ============ -->
+  <div class="title-page">
+    <div class="doc-header-flag">TEST VALIDATION PLAN (PVT) — PRO-PFE</div>
+
+    <div class="university-block">
+      <div class="university-name">University of Sousse</div>
+      <div class="university-sub">Higher School of Science and Technology of Hammam Sousse</div>
+    </div>
+
+    <div class="doc-title">
+      <h1>Test Validation Plan<br><span>(PVT)</span></h1>
+      <p class="doc-subtitle">PRO-PFE Project — Computer Science, LI2</p>
+    </div>
+
+    <div class="identity-grid">
+      <label>Group Number</label>
+      <input class="student-input" formControlName="groupNumber" placeholder="[Fill here]">
+
+      <label>Project Title</label>
+      <input class="student-input" formControlName="projectTitle" placeholder="[Project Name]">
+    </div>
+
+    <div class="members-block" formArrayName="members">
+      <label>Team Members</label>
+      <div class="chip-row">
+        <div class="chip-input" *ngFor="let member of members.controls; let i=index">
+          <input class="student-input" [formControlName]="i" placeholder="Name {{ i + 1 }}">
+        </div>
+      </div>
+      <button type="button" class="btn-ghost" (click)="addMember()">+ Add member</button>
+    </div>
+
+    <div class="academic-year">Academic Year 2025–2026</div>
+
+    <div class="toolbar">
+      <button type="button" class="btn-primary" (click)="prefillProjectDefaults()">⚡ Pré-remplir (stack du projet)</button>
+      <button type="button" class="btn-secondary" (click)="exportPDF()">📄 Exporter en PDF</button>
+      <button type="button" class="btn-secondary" (click)="saveTemplate()">💾 Sauvegarder (JSON)</button>
+    </div>
+  </div>
+
+  <!-- ============ EXECUTIVE SUMMARY ============ -->
+  <section class="section">
+    <h2><span class="sec-num">§</span> Executive Summary</h2>
+    <div class="important-box">
+      This document is <strong>PRE-IMPLEMENTATION</strong>. It describes HOW testing will be performed and MUST NOT contain any results.
+    </div>
+    <p class="field-label">Project Description:</p>
+    <textarea class="student-input" formControlName="projectDescription" rows="4" placeholder="Provide a short description of your system (objectives, users, main features)."></textarea>
+  </section>
+
+  <!-- ============ MANDATORY RULE ============ -->
+  <section class="section">
+    <h2><span class="sec-num">1</span> Mandatory Rule</h2>
+    <div class="important-box">
+      Each project MUST include at least <strong>THREE different categories of testing</strong> (chosen according to complexity, team size and architecture). Minimum required: 3 types — more is recommended.
+    </div>
+  </section>
+
+  <!-- ============ OBJECTIVES ============ -->
+  <section class="section">
+    <h2><span class="sec-num">2</span> Testing Objectives</h2>
+    <ul class="static-list">
+      <li>Ensure that the system meets functional requirements</li>
+      <li>Detect defects before deployment</li>
+      <li>Evaluate system robustness</li>
+      <li>Validate system security</li>
+      <li>Measure performance under load</li>
+    </ul>
+    <p class="field-label">Adapt these objectives to your specific project context:</p>
+    <textarea class="student-input" formControlName="objectives" rows="4" placeholder="Describe your specific testing objectives..."></textarea>
+  </section>
+
+  <!-- ============ SCOPE ============ -->
+  <section class="section">
+    <h2><span class="sec-num">3</span> Scope of Testing</h2>
+    <h3>3.1 Included Features</h3>
+    <textarea class="student-input" formControlName="includedFeatures" rows="3" placeholder="List the features that will be tested"></textarea>
+    <h3>3.2 Excluded Features</h3>
+    <textarea class="student-input" formControlName="excludedFeatures" rows="3" placeholder="List features NOT tested and explain why"></textarea>
+  </section>
+
+  <!-- ============ STRATEGY ============ -->
+  <section class="section">
+    <h2><span class="sec-num">4</span> Testing Strategy</h2>
+    <ul class="static-list">
+      <li>Unit Testing — code-level validation</li>
+      <li>Integration Testing — interaction between components</li>
+      <li>System Testing — end-to-end scenarios</li>
+    </ul>
+    <div class="important-box">Do NOT include test results here. Only describe the approach.</div>
+    <textarea class="student-input" formControlName="strategyDescription" rows="5" placeholder="Describe your testing strategy..."></textarea>
+  </section>
+
+  <!-- ============ TOOLS ============ -->
+  <section class="section" formArrayName="tools">
+    <h2><span class="sec-num">5</span> Testing Tools</h2>
+    <div class="list-editor">
+      <div class="list-row" *ngFor="let tool of tools.controls; let i=index">
+        <input class="student-input" [formControlName]="i" placeholder="Tool name">
+      </div>
+    </div>
+    <button type="button" class="btn-ghost" (click)="addTool()">+ Add tool</button>
+  </section>
+
+  <!-- ============ TEST CATEGORIES ============ -->
+  <section class="section">
+    <h2><span class="sec-num">6</span> Test Categories</h2>
+    <div class="important-box">You must define at least THREE categories.</div>
+
+    <div class="category-card" formGroupName="functionalTesting">
+      <h3>6.1 Functional Testing</h3>
+      <p class="field-label">Objective (default): Verify that system features behave as expected.</p>
+      <input class="student-input" formControlName="objective" placeholder="Objective">
+      <p class="field-label">Description:</p>
+      <textarea class="student-input" formControlName="description" rows="2" placeholder="Describe what functionalities you will test."></textarea>
+    </div>
+
+    <div class="category-card" formGroupName="securityTesting">
+      <h3>6.2 Security Testing</h3>
+      <p class="field-label">Objective (default): Ensure the system is protected against attacks (SQL Injection, XSS, unauthorized access...).</p>
+      <input class="student-input" formControlName="objective" placeholder="Objective">
+      <p class="field-label">Description:</p>
+      <textarea class="student-input" formControlName="description" rows="2" placeholder="Describe your system risks."></textarea>
+    </div>
+
+    <div class="category-card" formGroupName="performanceTesting">
+      <h3>6.3 Performance Testing</h3>
+      <p class="field-label">Objective (default): Measure system behavior under load (response time, stability, capacity).</p>
+      <input class="student-input" formControlName="objective" placeholder="Objective">
+      <p class="field-label">Description:</p>
+      <textarea class="student-input" formControlName="description" rows="2" placeholder="Define expected load (e.g., 100 users, 500 requests)."></textarea>
+    </div>
+  </section>
+
+  <!-- ============ TEST SCENARIOS ============ -->
+  <section class="section" formArrayName="scenarios">
+    <h2><span class="sec-num">7</span> Test Scenarios</h2>
+    <div class="scenario" *ngFor="let sc of scenarios.controls; let i=index" [formGroupName]="i">
+      <div class="scenario-head">
+        <input class="student-input id-input" formControlName="id" placeholder="ID (e.g. TC-01)">
+        <input class="student-input name-input" formControlName="name" placeholder="Scenario name">
+        <select class="student-input priority-input" formControlName="priority">
+          <option value="Critical">Critical</option>
+          <option value="Major">Major</option>
+          <option value="Minor">Minor</option>
+        </select>
+        <button type="button" class="btn-danger" (click)="removeScenario(i)">✕</button>
+      </div>
+      <p class="field-label">Preconditions:</p>
+      <textarea class="student-input" formControlName="preconditions" rows="2" placeholder="Initial state"></textarea>
+      <p class="field-label">Steps:</p>
+      <div formArrayName="steps" class="list-editor">
+        <div class="list-row" *ngFor="let step of getSteps(i).controls; let j=index">
+          <span class="step-num">{{ j + 1 }}.</span>
+          <input class="student-input" [formControlName]="j" placeholder="Step description">
+        </div>
+        <button type="button" class="btn-ghost small" (click)="addStep(i)">+ Step</button>
+      </div>
+      <p class="field-label">Expected Result:</p>
+      <textarea class="student-input" formControlName="expectedResult" rows="2" placeholder="Expected system behavior"></textarea>
+    </div>
+    <button type="button" class="btn-primary" (click)="addScenario()">+ Add Scenario</button>
+  </section>
+
+  <!-- ============ TEST DATA ============ -->
+  <section class="section">
+    <h2><span class="sec-num">8</span> Test Data</h2>
+    <textarea class="student-input" formControlName="testData" rows="4" placeholder="Provide examples (users, inputs, payloads)."></textarea>
+  </section>
+
+  <!-- ============ VALIDATION CRITERIA ============ -->
+  <section class="section">
+    <h2><span class="sec-num">9</span> Validation Criteria</h2>
+    <div class="two-col">
+      <div>
+        <h4>A test is successful if:</h4>
+        <ul class="static-list"><li>Expected result matches actual behavior</li><li>No unexpected errors occur</li></ul>
+      </div>
+      <div>
+        <h4>A test fails if:</h4>
+        <ul class="static-list"><li>Output is incorrect</li><li>System crashes or behaves unexpectedly</li></ul>
+      </div>
+    </div>
+    <textarea class="student-input" formControlName="validationCriteria" rows="3" placeholder="Additional validation criteria specific to your project..."></textarea>
+  </section>
+
+  <!-- ============ FINAL WARNING ============ -->
+  <section class="section">
+    <div class="important-box strong">
+      This document MUST NOT contain: test results, screenshots, or metrics.<br>
+      All results belong to the <strong>FINAL REPORT</strong>.
+    </div>
+  </section>
+
+  <div class="actions no-print">
+    <button (click)="exportPDF()">📄 Exporter en PDF</button>
+    <button (click)="saveTemplate()">💾 Sauvegarder (JSON)</button>
+  </div>
+</div>

@@ -1,0 +1,331 @@
+<!-- ===== BUG TEST MODAL ===== -->
+<div id="bug-test-modal" [class.active]="bugModalActive">
+  <div class="modal-icon">[BUG]</div>
+  <div class="modal-title">TEST DE BUG</div>
+  <div class="modal-sub">Vous devez tester ce bug pour valider sa correction.<br>Choisissez le résultat du test ci-dessous.</div>
+  <div class="modal-bug-id" id="modal-bug-id">{{ modalBugId }}</div>
+  <div class="modal-actions">
+    <button class="btn-test-pass" (click)="validateBugTest('pass')">[OK] TEST REUSSI</button>
+    <button class="btn-test-fail" (click)="validateBugTest('fail')">[X] TEST ECHOUE</button>
+    <button class="btn-test-back" (click)="closeBugModal()">[<] RETOUR</button>
+  </div>
+  <div style="font-size:11px;color:var(--text-muted);margin-top:8px;">Ce test est lie au jeu MAZE HUNTER</div>
+</div>
+
+<div class="app-wrapper">
+  <!-- SIDEBAR -->
+  <aside class="sidebar">
+    <div class="logo-area">
+      <div class="kong-icon-container">
+        <canvas #kongCanvas id="kong-canvas" class="kong-icon-canvas"></canvas>
+      </div>
+      <div class="logo-text">
+        <div class="logo">BLACKBOX</div>
+        <div class="logo-sub">QA Platform · Black Box Testing</div>
+      </div>
+    </div>
+    
+    <nav class="nav">
+      <div class="nav-section">
+        <div class="nav-section-title">Mission</div>
+        <div class="nav-item active" (click)="showPage('dashboard')">
+          <span class="nav-icon">[+]</span>
+          <span>Dashboard</span>
+        </div>
+        <div class="nav-item" (click)="showPage('generator')">
+          <span class="nav-icon">[AI]</span>
+          <span>AI Generator</span>
+          <span class="nav-badge">AI</span>
+        </div>
+      </div>
+      
+      <div class="nav-section">
+        <div class="nav-section-title">QA Modules</div>
+        <div class="nav-item" (click)="showPage('requirements')"><span class="nav-icon">[R]</span><span>Requirements</span><span class="nav-badge">12</span></div>
+        <div class="nav-item" (click)="showPage('testcases')"><span class="nav-icon">[T]</span><span>Test Cases</span><span class="nav-badge">47</span></div>
+        <div class="nav-item" (click)="showPage('bugs')"><span class="nav-icon">[B]</span><span>Bug Tracker</span><span class="nav-badge">{{ openBugs.length }}</span></div>
+        <div class="nav-item" (click)="showPage('testruns')"><span class="nav-icon">[>]</span><span>Test Runs</span></div>
+      </div>
+      
+      <div class="nav-section">
+        <div class="nav-section-title">Reports</div>
+        <div class="nav-item" (click)="showPage('pvt')"><span class="nav-icon">[P]</span><span>Rapport PVT</span></div>
+        <div class="nav-item" (click)="showPage('reports')"><span class="nav-icon">[G]</span><span>Rapport Global</span></div>
+      </div>
+      
+      <div class="nav-section">
+        <div class="nav-section-title">Ecosystem</div>
+        <div class="nav-item" (click)="showPage('tools')"><span class="nav-icon">[T]</span><span>Outils Specialises</span></div>
+      </div>
+    </nav>
+    
+    <div class="sidebar-footer">
+      <div class="progress-label">Progression Maze</div>
+      <div class="progress-track"><div class="progress-fill"></div></div>
+      <div style="font-size: 11px; color: var(--accent-primary); margin-top: 6px;">68% complete</div>
+    </div>
+  </aside>
+  
+  <!-- MAIN CONTENT -->
+  <div class="main">
+    <header class="topbar">
+      <div class="breadcrumb">
+        BLACKBOX <span style="margin:0 6px">›</span> <span class="breadcrumb-current" id="breadcrumb-cur">Dashboard</span>
+      </div>
+      <div class="topbar-right">
+        <div class="target-url-wrap">
+          <label for="target-url">[C] Cible</label>
+          <input class="target-url-input" id="target-url" type="text" placeholder="http://localhost:3000" [(ngModel)]="targetUrl" />
+          <button class="btn-secondary" style="padding:4px 10px;font-size:10px;" (click)="saveTargetUrl()">[OK]</button>
+          <button class="btn-primary" style="padding:4px 12px;font-size:10px;" (click)="startScan()">[▶] LANCER LE SCAN</button>
+        </div>
+        <div class="session-status"><div class="status-dot"></div> Session active · Sprint 4</div>
+        <button class="btn-primary" (click)="showPage('generator')">+ GENERER TESTS</button>
+        <button class="btn-game" (click)="goToGame()">[G] GO TO GAME</button>
+      </div>
+    </header>
+    
+    <div class="content">
+      <!-- DASHBOARD -->
+      <div id="page-dashboard" class="page active">
+        <div class="section-header">
+          <div><div class="section-title">Tableau de <span class="section-title-accent">bord</span></div><div class="section-sub">Sprint 4 · 14 juin 2025 · Projet Alpha CRM</div></div>
+        </div>
+        <div class="kpi-grid">
+          <div class="kpi-card"><div class="kpi-label">Tests passes</div><div class="kpi-value" id="kpi-passed">31</div><div class="kpi-delta delta-up">↑ +6 ce sprint</div></div>
+          <div class="kpi-card"><div class="kpi-label">Bugs ouverts</div><div class="kpi-value" id="kpi-bugs">{{ bugs.filter(b => b.status === 'OPEN').length }}</div><div class="kpi-delta delta-down">↓ 3 critiques</div></div>
+          <div class="kpi-card"><div class="kpi-label">Bloques</div><div class="kpi-value">5</div><div class="kpi-delta">— stable</div></div>
+          <div class="kpi-card"><div class="kpi-label">Couverture</div><div class="kpi-value">68%</div><div class="kpi-delta delta-up">↑ +12% vs sprint 3</div></div>
+        </div>
+        
+        <div class="panel-grid">
+          <div class="panel"><div class="panel-header"><div class="panel-title">Bugs recents</div><div class="panel-link" (click)="showPage('bugs')">VOIR TOUT →</div></div><div class="panel-body"><div class="table-wrapper"><table class="qa-table"><thead><tr><th>ID</th><th>Titre</th><th>Priorite</th><th>Status</th></tr></thead><tbody>
+            <tr *ngFor="let bug of bugs | slice:0:3">
+              <td style="color:var(--text-muted)">{{ bug.id }}</td>
+              <td>{{ bug.name }}</td>
+              <td><span class="priority-badge priority-{{ bug.priority.toLowerCase() }}">{{ bug.priority }}</span></td>
+              <td><span class="chip chip-{{ bug.status.toLowerCase() }}">{{ bug.status }}</span></td>
+            </tr>
+          </tbody></table></div></div></div>
+          
+          <div class="panel"><div class="panel-header"><div class="panel-title">Couverture par module</div><div class="panel-link">EXPORT</div></div><div class="panel-body" style="padding:20px">...</div></div>
+        </div>
+      </div>
+      
+      <!-- GENERATOR (corrigé avec appel API dynamique) -->
+      <div id="page-generator" class="page">
+        <div class="section-header">
+          <div>
+            <div class="section-title">IA <span class="section-title-accent">Generateur</span></div>
+            <div class="section-sub">Black Box · Aucun acces au code requis</div>
+          </div>
+        </div>
+        <div class="ai-zone">
+          <div class="ai-header">
+            <div class="ai-icon">[K]</div>
+            <div>
+              <div class="ai-title">KONG INTELLIGENCE</div>
+              <div class="ai-sub">Decris une fonctionnalite → Kong genere des tests difficiles</div>
+            </div>
+          </div>
+          <div class="ai-form-grid">
+            <div class="ai-form-left">
+              <div class="field-group">
+                <div class="field-label">Description de la fonctionnalite</div>
+                <textarea class="field-textarea" id="feat-desc" placeholder="Ex: Formulaire de login avec email, mot de passe et option 'se souvenir de moi'. L'utilisateur est redirige vers /dashboard apres connexion reussie."></textarea>
+              </div>
+              <div class="field-group">
+                <div class="field-label">Types de tests a inclure</div>
+                <div class="tag-row">
+                  <span class="tag active" (click)="toggleTag($event.currentTarget)">Happy Path</span>
+                  <span class="tag active" (click)="toggleTag($event.currentTarget)">Negative</span>
+                  <span class="tag active" (click)="toggleTag($event.currentTarget)">Edge Cases</span>
+                  <span class="tag active" (click)="toggleTag($event.currentTarget)">SQL Injection</span>
+                  <span class="tag" (click)="toggleTag($event.currentTarget)">XSS</span>
+                </div>
+              </div>
+            </div>
+            <div class="ai-form-right">
+              <div class="field-group">
+                <div class="field-label">Module applicatif</div>
+                <select class="field-select"><option>Authentification</option><option>API REST</option></select>
+              </div>
+              <div class="field-group">
+                <div class="field-label">Niveau de difficulte</div>
+                <select class="field-select"><option>Standard</option><option>Expert (Kong Mode)</option></select>
+              </div>
+              <div class="field-group">
+                <div class="field-label">Nombre de cas</div>
+                <input class="field-input" type="number" value="6" min="3" max="30" id="case-count">
+              </div>
+              <button class="generate-btn" (click)="generateCases()"><span>[K]</span> GENERER LES TESTS</button>
+            </div>
+          </div>
+
+          <!-- Affichage dynamique des cas de test générés -->
+          <div class="generated-cases" *ngIf="generatedTestCases && generatedTestCases.length > 0" style="margin-top:24px">
+            <div class="gen-header" style="display:flex;justify-content:space-between;margin-bottom:12px">
+              <div class="gen-title" style="font-weight:600;color:var(--accent-primary)">
+                [K] KONG a généré {{ generatedTestCases.length }} cas de test
+              </div>
+              <div class="gen-count" style="font-size:12px;color:var(--text-muted)">Cliquer pour ajouter</div>
+            </div>
+
+            <div class="case-card" *ngFor="let tc of generatedTestCases; let i = index">
+              <div class="case-header">
+                <span class="case-id">{{ tc.id || 'TC-AI-' + (i+1).toString().padStart(3, '0') }}</span>
+                <span class="chip chip-{{ tc.type === 'critique' ? 'fail' : (tc.type === 'nominal' ? 'pass' : 'warn') }}">
+                  {{ (tc.type || 'autre').toUpperCase() }}
+                </span>
+              </div>
+              <div class="case-title">{{ tc.title }}</div>
+              <div class="case-desc">{{ tc.description }}</div>
+              <div class="case-tags">
+                <span class="case-tag" *ngFor="let tag of tc.tags || []">{{ tag }}</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Message si aucun cas n'est encore généré -->
+          <div class="generated-cases" *ngIf="generatedTestCases && generatedTestCases.length === 0" style="margin-top:24px; color:var(--text-muted); text-align:center; padding:20px; border:1px dashed var(--border-color); border-radius:8px;">
+            Les cas de test apparaîtront ici après génération.
+          </div>
+        </div>
+      </div>
+      
+      <!-- TEST CASES -->
+      <div id="page-testcases" class="page"><div class="section-header"><div><div class="section-title">Cas de <span class="section-title-accent">test</span></div><div class="section-sub">47 cas · Black Box Testing</div></div><button class="btn-primary">+ NOUVEAU CAS</button></div><div class="search-row"><input class="search-input" placeholder="Rechercher un cas de test..."><button class="btn-secondary">STATUT ▾</button><button class="btn-secondary">MODULE ▾</button></div><div class="panel"><div class="table-wrapper"><table class="qa-table"><thead><tr><th>ID</th><th>Titre</th><th>Module</th><th>Priorite</th><th>Statut</th></tr></thead><tbody><tr><td style="color:var(--text-muted)">TC-001</td><td>Login credentials valides</td><td>Auth</td><td><span class="priority-badge priority-high">HIGH</span></td><td><span class="chip chip-pass">PASS</span></td></tr>
+        <tr><td style="color:var(--text-muted)">TC-002</td><td>SQL Injection champ email</td><td>Auth</td><td><span class="priority-badge priority-crit">CRITIQUE</span></td><td><span class="chip chip-fail">FAIL</span></td></tr>
+      </tbody>
+    </table></div></div></div>
+      
+      <!-- BUGS -->
+      <div id="page-bugs" class="page">
+        <div class="section-header">
+          <div>
+            <div class="section-title">Bug <span class="section-title-accent">Tracker</span></div>
+            <div class="section-sub">{{ openBugs.length }} bugs ouverts · {{ openBugs.filter(b => b.priority === 'CRITIQUE').length }} critiques</div>
+          </div>
+          <button class="btn-primary">+ NOUVEAU BUG</button>
+        </div>
+        <div class="search-row">
+          <input class="search-input" placeholder="Rechercher un bug..." id="bug-search-input">
+        </div>
+        <div class="panel">
+          <div class="table-wrapper">
+            <table class="qa-table">
+              <thead>
+                <tr>
+                  <th>ID</th>
+                  <th>Titre</th>
+                  <th>Priorite</th>
+                  <th>Statut</th>
+                  <th>Action</th>
+                </tr>
+              </thead>
+              <tbody id="bugs-table-body">
+                <tr *ngFor="let bug of openBugs" [id]="'bug-row-' + bug.id">
+                  <td style="color:var(--text-muted)">{{ bug.id }}</td>
+                  <td>{{ bug.name }}</td>
+                  <td><span class="priority-badge priority-{{ bug.priority.toLowerCase() }}">{{ bug.priority }}</span></td>
+                  <td><span class="chip chip-{{ bug.status.toLowerCase() }}">{{ bug.status }}</span></td>
+                  <td>
+                    <button class="btn-secondary" style="padding:4px 12px;font-size:10px;" (click)="openBugTest(bug.id)">[►] TESTER</button>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- RAPPORT PVT -->
+      <div id="page-pvt" class="page">
+        <app-pvt-editor></app-pvt-editor>
+      </div>
+
+      <!-- RAPPORT GLOBAL (FINAL) -->
+      <div id="page-reports" class="page">
+        <app-final-report-editor></app-final-report-editor>
+      </div>
+
+      <!-- REQUIREMENTS : couverture dérivée automatiquement des bugs détectés -->
+      <div id="page-requirements" class="page">
+        <div class="section-header">
+          <div>
+            <div class="section-title">Couverture des <span class="section-title-accent">Requirements</span></div>
+            <div class="section-sub">Historique complet ({{ bugs.length }} bug(s) détecté(s) au total, corrigés inclus) — {{ openBugs.length }} actuellement ouverts dans le Bug Tracker</div>
+          </div>
+        </div>
+        <div class="panel" *ngIf="getRequirementsCoverage().length === 0">
+          <p style="padding:24px;color:#888;">Aucun bug détecté pour le moment — lance un scan pour peupler cette page.</p>
+        </div>
+        <div class="req-grid">
+          <div class="req-card" *ngFor="let cat of getRequirementsCoverage()">
+            <div class="req-card-head">
+              <span class="req-label">{{ cat.label }}</span>
+              <span class="req-coverage" [class.req-coverage-full]="cat.coverage === 100">{{ cat.coverage }}%</span>
+            </div>
+            <div class="req-bar">
+              <div class="req-bar-fill" [style.width.%]="cat.coverage"></div>
+            </div>
+            <div class="req-stats">
+              <span>{{ cat.total }} détecté(s)</span>
+              <span class="req-stat-fixed">{{ cat.fixed }} corrigé(s)</span>
+              <span class="req-stat-open">{{ cat.open }} ouvert(s)</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- TEST RUNS : historique réel des sessions de scan -->
+      <div id="page-testruns" class="page">
+        <div class="section-header">
+          <div>
+            <div class="section-title">Historique des <span class="section-title-accent">Test Runs</span></div>
+            <div class="section-sub">{{ sessions.length }} session(s) de scan enregistrée(s)</div>
+          </div>
+          <button class="btn-secondary" (click)="loadSessions()">[↻] RAFRAÎCHIR</button>
+        </div>
+        <div class="panel">
+          <table class="qa-table">
+            <thead>
+              <tr><th>Session</th><th>URL cible</th><th>Démarré</th><th>Statut</th><th>Bugs détectés</th></tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let s of sessions">
+                <td>{{ s.id }}</td>
+                <td>{{ s.url }}</td>
+                <td>{{ s.started_at }}</td>
+                <td><span class="chip chip-{{ s.status.toLowerCase() }}">{{ s.status }}</span></td>
+                <td>{{ bugsForSession(s.id).length }}</td>
+              </tr>
+              <tr *ngIf="sessions.length === 0">
+                <td colspan="5" style="text-align:center;color:#888;padding:20px;">Aucun scan lancé pour le moment.</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- OUTILS SPECIALISES : liens vers de vrais outils de test externes -->
+      <div id="page-tools" class="page">
+        <div class="section-header">
+          <div>
+            <div class="section-title">Outils <span class="section-title-accent">Spécialisés</span></div>
+            <div class="section-sub">Liens vers des outils externes complémentaires au scanner intégré</div>
+          </div>
+        </div>
+        <div class="tools-group" *ngFor="let group of specializedTools">
+          <div class="tools-group-title">{{ group.category }}</div>
+          <div class="tools-grid">
+            <a class="tool-card" *ngFor="let tool of group.items" [href]="tool.url" target="_blank" rel="noopener noreferrer">
+              <div class="tool-name">{{ tool.name }} <span class="tool-ext">↗</span></div>
+              <div class="tool-desc">{{ tool.desc }}</div>
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

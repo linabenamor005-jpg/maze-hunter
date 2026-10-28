@@ -1,0 +1,108 @@
+# ======================================================
+# Angular
+# ======================================================
+/dist
+/tmp
+/out-tsc
+/bazel-out
+/.angular/cache
+
+# ======================================================
+# Node
+# ======================================================
+/node_modules
+npm-debug.log
+yarn-error.log
+package-lock.json.bak
+
+# ======================================================
+# IDEs / Editors
+# ======================================================
+.idea/
+.project
+.classpath
+.c9/
+*.launch
+.settings/
+*.sublime-workspace
+.history/*
+
+# VS Code
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+!.vscode/mcp.json
+
+# ======================================================
+# Misc
+# ======================================================
+.sass-cache/
+/connect.lock
+/coverage
+/libpeerconnection.log
+testem.log
+/typings
+__screenshots__/
+
+# ======================================================
+# System
+# ======================================================
+.DS_Store
+Thumbs.db
+
+# ======================================================
+# Secrets / Env
+# ======================================================
+.env
+.env.local
+*.key
+secrets.json
+
+# ======================================================
+# Logs
+# ======================================================
+*.log
+
+# ======================================================
+# 3D Models - Versionnés via Git LFS
+# (Ne PAS ajouter *.glb/*.gltf ici si tu utilises LFS)
+# ======================================================
+# *.glb
+# *.gltf
+
+# ======================================================
+# Python Backend
+# ======================================================
+/backend/__pycache__/
+/backend/**/__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+/backend/.venv/
+/backend/venv/
+/backend/env/
+/backend/ENV/
+/backend/.env
+/backend/.env.*
+!.env.example
+/backend/*.log
+
+# ======================================================
+# Secrets (JAMAIS sur GitHub)
+# ======================================================
+*.env
+.env
+.env.local
+.env.production
+secrets.json
+*.key
+*.pem
+
+# ======================================================
+# 3D Models (si > 100 MB, utiliser Git LFS)
+# ======================================================
+# *.glb
+# *.gltf

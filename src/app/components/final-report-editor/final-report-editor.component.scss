@@ -1,0 +1,168 @@
+// ===== Document style — inspiré du prototype LaTeX (Final Test Validation Report) =====
+:host { display: block; background: #5a5a5a; padding: 24px 0; }
+
+.doc-page {
+  max-width: 840px;
+  margin: 0 auto 40px;
+  background: #ffffff;
+  color: #1a1a1a;
+  font-family: "Georgia", "Times New Roman", serif;
+  box-shadow: 0 4px 24px rgba(0,0,0,0.35);
+  padding: 56px 64px;
+  line-height: 1.5;
+}
+
+.title-page {
+  text-align: center;
+  border-bottom: 3px double #1a1a1a;
+  padding-bottom: 28px;
+  margin-bottom: 32px;
+}
+.doc-header-flag {
+  font-family: "Helvetica Neue", Arial, sans-serif;
+  font-size: 11px;
+  letter-spacing: 1.5px;
+  color: #888;
+  margin-bottom: 20px;
+  text-transform: uppercase;
+}
+.doc-title h1 { font-size: 30px; margin: 8px 0 4px; font-weight: 700; }
+.doc-subtitle { color: #555; font-size: 15px; margin-bottom: 24px; }
+
+.identity-grid {
+  display: grid;
+  grid-template-columns: max-content 1fr;
+  gap: 10px 14px;
+  max-width: 460px;
+  margin: 0 auto 20px;
+  text-align: left;
+  align-items: center;
+  label { font-weight: bold; font-size: 14px; }
+}
+.members-block {
+  margin: 0 auto 16px;
+  max-width: 460px;
+  text-align: left;
+  label { font-weight: bold; display: block; margin-bottom: 6px; }
+}
+.chip-row { display: flex; flex-direction: column; gap: 6px; }
+
+.toolbar {
+  margin-top: 20px;
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+.import-message {
+  margin-top: 10px;
+  font-family: "Helvetica Neue", Arial, sans-serif;
+  font-size: 13px;
+  color: #1a1a1a;
+}
+
+// ---- Champs "à remplir" ----
+.student-input {
+  width: 100%;
+  font-family: inherit;
+  font-size: 14px;
+  color: #1449c7;
+  background: #f4f7ff;
+  border: 1px solid #c7d4f5;
+  border-radius: 4px;
+  padding: 7px 10px;
+  box-sizing: border-box;
+  &::placeholder { color: #7c8db5; font-style: italic; }
+  &:focus { outline: none; border-color: #1449c7; box-shadow: 0 0 0 2px rgba(20,73,199,0.15); }
+  &.center { text-align: center; font-weight: bold; }
+  &.pass { color: #1a7a3c; background: #eefbf1; border-color: #b7e2c4; }
+  &.fail { color: #b3261e; background: #fdecec; border-color: #e0a5a0; }
+}
+textarea.student-input { resize: vertical; }
+.select-input { max-width: 220px; }
+
+.field-label { font-weight: bold; margin: 12px 0 4px; font-size: 14px; }
+
+.section {
+  margin-top: 34px;
+  padding-top: 18px;
+  border-top: 1px solid #ddd;
+  h2 { font-size: 19px; margin-bottom: 10px; .sec-num { color: #b3261e; font-weight: bold; margin-right: 6px; } }
+  h3 { font-size: 16px; margin: 16px 0 6px; }
+}
+.static-list { margin: 6px 0 10px 20px; font-size: 14px; color: #333; }
+
+.important-box {
+  background: #fdecec;
+  border: 1px solid #e0a5a0;
+  border-left: 4px solid #b3261e;
+  color: #7a1a15;
+  padding: 10px 14px;
+  border-radius: 4px;
+  font-size: 13.5px;
+  margin: 10px 0 14px;
+}
+
+// ---- Tables (résumé, résultats, défauts) ----
+.summary-table, .results-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 10px 0;
+  font-size: 13px;
+  th, td { border: 1px solid #ddd; padding: 6px 8px; text-align: left; }
+  th { background: #f0f0f0; font-family: "Helvetica Neue", Arial, sans-serif; font-weight: 600; }
+}
+.summary-table th, .summary-table td { text-align: center; }
+
+.legend {
+  font-family: "Helvetica Neue", Arial, sans-serif;
+  font-size: 12.5px;
+  color: #444;
+  margin-top: 10px;
+}
+.sev-badge {
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: 10px;
+  font-weight: 600;
+  font-size: 11px;
+  &.critical { background: #fdecec; color: #b3261e; }
+  &.major { background: #fff4e0; color: #a05a00; }
+  &.minor { background: #eef3ff; color: #1449c7; }
+}
+
+.list-editor { display: flex; flex-direction: column; gap: 6px; margin: 6px 0; }
+.list-row { display: flex; align-items: center; gap: 8px; }
+
+// ---- Boutons ----
+button { font-family: "Helvetica Neue", Arial, sans-serif; cursor: pointer; border: none; border-radius: 5px; font-size: 13px; }
+.btn-primary { background: #1449c7; color: #fff; padding: 9px 16px; font-weight: 600; }
+.btn-primary:hover { background: #0f3aa3; }
+.btn-secondary { background: #e8e8e8; color: #222; padding: 9px 16px; }
+.btn-secondary:hover { background: #d8d8d8; }
+.btn-import { background: #1a7a3c; color: #fff; padding: 9px 16px; font-weight: 600; }
+.btn-import:hover { background: #145f2e; }
+.btn-import:disabled { opacity: 0.6; cursor: default; }
+.btn-ghost { background: transparent; color: #1449c7; padding: 6px 10px; border: 1px dashed #1449c7; }
+.btn-ghost.small { padding: 3px 8px; font-size: 12px; }
+.btn-danger { background: #b3261e; color: #fff; padding: 6px 10px; }
+
+.actions {
+  margin-top: 36px;
+  padding-top: 20px;
+  border-top: 2px solid #1a1a1a;
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+  button { background: #1a1a1a; color: #fff; padding: 10px 20px; font-weight: 600; }
+  button:hover { background: #000; }
+}
+
+@media print {
+  :host { background: #fff; padding: 0; }
+  .doc-page { box-shadow: none; max-width: 100%; padding: 20px; margin: 0; }
+  .no-print, .toolbar, .import-message, .btn-ghost, .btn-danger, button { display: none !important; }
+  .student-input { border: none; background: transparent; box-shadow: none; padding: 0; color: #1449c7; font-size: 12pt; }
+  .important-box { border: 1px solid #b3261e; background: #fff; }
+  .section { break-inside: avoid; }
+}

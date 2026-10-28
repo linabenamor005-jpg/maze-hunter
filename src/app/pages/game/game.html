@@ -1,0 +1,72 @@
+<div id="game-container">
+  <canvas #gameCanvas></canvas>
+</div>
+
+<div id="game-hud">
+  <div class="game-hud-panel">
+    <div class="ghp-label">INTEGRITY</div>
+    <div class="ghp-value red" id="game-hp">{{ hp }}%</div>
+    <div id="hp-bar"><div id="hp-fill" [style.width.%]="hp"></div></div>
+  </div>
+  <div class="game-hud-panel" style="text-align:center">
+    <div class="ghp-label">BUGS</div>
+    <div class="ghp-value" id="game-bugs">{{ bugsCollected }}/{{ totalBugs }}</div>
+  </div>
+  <div class="game-hud-panel" style="text-align:center">
+    <div class="ghp-label">LEVEL</div>
+    <div class="ghp-value orange" id="game-level">{{ level }}</div>
+  </div>
+  <div class="game-hud-panel" style="text-align:center">
+    <div class="ghp-label">💰</div>
+    <div class="ghp-value gold" id="game-money">{{ money }}</div>
+  </div>
+  <div class="game-hud-panel" style="text-align:right">
+    <div class="ghp-label">TIME</div>
+    <div class="ghp-value" id="game-time">{{ timer }}</div>
+  </div>
+</div>
+
+<button id="back-to-testing" (click)="goBackToTesting()">← RETOUR</button>
+
+<div id="toast" [class.active]="toastActive">
+  <span class="toast-icon">{{ toastIcon }}</span>
+  <span id="toast-text">{{ toastText }}</span>
+</div>
+
+<div id="bug-overlay" [class.active]="bugOverlayActive">
+  <div class="bug-overlay-icon">🐞</div>
+  <div class="bug-overlay-title">BUG DÉTECTÉ !</div>
+  <div class="bug-overlay-sub">Vous avez trouvé un bug !<br>Testez-le pour continuer votre aventure.</div>
+  <div class="bug-overlay-details" id="bug-details">{{ bugDetailsText }}</div>
+  <button class="bug-overlay-btn" (click)="testBugNow()">🧪 TESTER CE BUG</button>
+</div>
+
+<div class="game-modal" id="game-over-modal" [class.active]="gameOverActive">
+  <div class="gm-title over">GAME OVER</div>
+  <div class="gm-sub">Le temps est écoulé !</div>
+  <div id="go-score" style="font-family:'Orbitron';color:var(--teal);font-size:18px;">{{ goScoreText }}</div>
+  <button class="gm-btn" (click)="restartGame()">▶ RETRY</button>
+  <button class="gm-btn" style="background:transparent;border-color:var(--teal);color:var(--teal);box-shadow:none;margin-top:4px" (click)="goBackToTesting()">← TESTING</button>
+</div>
+
+<div class="game-modal" id="game-win-modal" [class.active]="gameWinActive">
+  <div class="gm-title win">VICTORY!</div>
+  <div class="gm-sub">Tous les bugs éliminés !</div>
+  <div id="win-time" style="font-family:'Orbitron';color:#ffcc00;font-size:18px;">{{ winTimeText }}</div>
+  <button class="gm-btn" (click)="restartGame()">▶ PLAY AGAIN</button>
+  <button class="gm-btn" style="background:transparent;border-color:var(--teal);color:var(--teal);box-shadow:none;margin-top:4px" (click)="goBackToTesting()">← TESTING</button>
+</div>
+
+<div id="mobile-controls" [class.active]="mobileControlsActive">
+  <div class="dpad">
+    <div class="dp em"></div>
+    <div class="dp" id="dp-u" [class.pr]="dpPressed['u']" (touchstart)="dpDown('u')" (touchend)="dpUp('u')">▲</div>
+    <div class="dp em"></div>
+    <div class="dp" id="dp-l" [class.pr]="dpPressed['l']" (touchstart)="dpDown('l')" (touchend)="dpUp('l')">◀</div>
+    <div class="dp em"></div>
+    <div class="dp" id="dp-r" [class.pr]="dpPressed['r']" (touchstart)="dpDown('r')" (touchend)="dpUp('r')">▶</div>
+    <div class="dp em"></div>
+    <div class="dp" id="dp-d" [class.pr]="dpPressed['d']" (touchstart)="dpDown('d')" (touchend)="dpUp('d')">▼</div>
+    <div class="dp em"></div>
+  </div>
+</div>

@@ -1,0 +1,387 @@
+<!-- admin-dashboard.component.html -->
+<div class="admin-shell">
+
+    <!-- ===== SIDEBAR ===== -->
+    <aside class="admin-sidebar">
+        <div class="admin-logo">
+            <span class="admin-logo-icon">◆</span>
+            <div>
+                <div class="admin-logo-title">MAZE HUNTER</div>
+                <div class="admin-logo-sub">ADMIN PANEL</div>
+            </div>
+        </div>
+
+        <nav class="admin-nav">
+            <div class="admin-nav-item" [class.active]="currentPage === 'overview'" (click)="showPage('overview')">
+                <span class="nav-icon">◈</span>
+                <span>Vue d'ensemble</span>
+            </div>
+            <div class="admin-nav-item" [class.active]="currentPage === 'bugs'" (click)="showPage('bugs')">
+                <span class="nav-icon">🐞</span>
+                <span>Bugs</span>
+                <span class="nav-badge">{{ totalBugs }}</span>
+            </div>
+            <div class="admin-nav-item" [class.active]="currentPage === 'users'" (click)="showPage('users')">
+                <span class="nav-icon">👤</span>
+                <span>Utilisateurs</span>
+                <span class="nav-badge">{{ totalUsers }}</span>
+            </div>
+            <div class="admin-nav-divider"></div>
+            <div class="admin-nav-item" (click)="router.navigate(['/test'])">
+                <span class="nav-icon">↩</span>
+                <span>Espace testeur</span>
+            </div>
+        </nav>
+
+        <div class="admin-sidebar-footer">
+            <div class="admin-user-chip">
+                <span class="admin-avatar">{{ (adminAuth.currentAdmin$ | async)?.name?.charAt(0) || 'A' }}</span>
+                <span>{{ (adminAuth.currentAdmin$ | async)?.name || 'Admin' }}</span>
+            </div>
+            <button class="admin-logout-btn" (click)="logout()">⏻ Déconnexion</button>
+        </div>
+    </aside>
+
+    <!-- ===== CONTENT ===== -->
+    <main class="admin-content">
+
+        <!-- =============================== -->
+        <!-- PAGE : VUE D'ENSEMBLE           -->
+        <!-- =============================== -->
+        <div class="admin-page" *ngIf="currentPage === 'overview'">
+            <div class="admin-header">
+                <div>
+                    <div class="admin-title">
+                        Tableau de bord
+                        <span class="admin-title-accent">Admin</span>
+                    </div>
+                    <div class="admin-subtitle">Vue d'ensemble de l'activité de la plateforme</div>
+                </div>
+                <div class="demo-badge" title="Les statistiques utilisateurs sont des données de démonstration en attendant un vrai système multi-comptes">
+                    ⚠ Données utilisateurs : démo
+                </div>
+            </div>
+
+            <!-- KPI -->
+            <div class="kpi-row">
+                <div class="kpi-card" (click)="showPage('users')">
+                    <div class="kpi-label">Utilisateurs</div>
+                    <div class="kpi-value">{{ totalUsers }}</div>
+                    <div class="kpi-tag kpi-tag-demo">démo</div>
+                </div>
+                <div class="kpi-card" (click)="showPage('bugs')">
+                    <div class="kpi-label">Sites testés</div>
+                    <div class="kpi-value">{{ totalSitesTested }}</div>
+                    <div class="kpi-tag kpi-tag-real">réel</div>
+                </div>
+                <div class="kpi-card" (click)="showPage('bugs')">
+                    <div class="kpi-label">Bugs détectés</div>
+                    <div class="kpi-value">{{ totalBugs }}</div>
+                    <div class="kpi-tag kpi-tag-real">réel</div>
+                </div>
+                <div class="kpi-card" (click)="showPage('bugs')">
+                    <div class="kpi-label">Taux de correction</div>
+                    <div class="kpi-value">{{ globalFixRate }}%</div>
+                    <div class="kpi-tag kpi-tag-real">réel</div>
+                </div>
+                <div class="kpi-card">
+                    <div class="kpi-label">Sessions de scan</div>
+                    <div class="kpi-value">{{ totalSessions }}</div>
+                    <div class="kpi-tag kpi-tag-real">réel</div>
+                </div>
+                <div class="kpi-card" (click)="showPage('users')">
+                    <div class="kpi-label">Temps moy. / utilisateur</div>
+                    <div class="kpi-value">{{ avgSessionTimeAllUsers }}min</div>
+                    <div class="kpi-tag kpi-tag-demo">démo</div>
+                </div>
+            </div>
+
+            <!-- Charts -->
+            <div class="section-title-row">
+                <h2>Aperçu bugs <span class="tag-real">données réelles</span></h2>
+                <button class="link-btn" (click)="showPage('bugs')">Voir tout →</button>
+            </div>
+            <div class="chart-grid chart-grid-3">
+                <div class="chart-card">
+                    <div class="chart-card-title">Par semaine</div>
+                    <div class="bar-chart">
+                        <div class="bar-col" *ngFor="let b of bugsByWeek; let i = index">
+                            <div class="bar-value">{{ b.value }}</div>
+                            <div class="bar bar-grow" [style.height.%]="b.heightPct" [style.animation-delay.ms]="i * 40"></div>
+                            <div class="bar-label">{{ b.label }}</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="chart-card">
+                    <div class="chart-card-title">Par catégorie</div>
+                    <div class="bar-chart">
+                        <div class="bar-col" *ngFor="let b of bugsByCategory; let i = index">
+                            <div class="bar-value">{{ b.value }}</div>
+                            <div class="bar bar-grow bar-fuchsia" [style.height.%]="b.heightPct" [style.animation-delay.ms]="i * 40"></div>
+                            <div class="bar-label">{{ b.label }}</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="chart-card">
+                    <div class="chart-card-title">Usage hebdo <span class="tag-demo">démo</span></div>
+                    <svg viewBox="0 0 260 140" class="line-chart">
+                        <polyline class="line-draw" [attr.points]="weeklyUsagePoints" fill="none" stroke="url(#lineGradOverview)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+                        <defs>
+                            <linearGradient id="lineGradOverview" x1="0%" y1="0%" x2="100%" y2="0%">
+                                <stop offset="0%" stop-color="#ff1f7a"/>
+                                <stop offset="100%" stop-color="#ff6600"/>
+                            </linearGradient>
+                        </defs>
+                        <circle class="line-dot" *ngFor="let pt of weeklyUsagePoints.split(' '); let i = index"
+                        [attr.cx]="pt.split(',')[0]" [attr.cy]="pt.split(',')[1]" r="4"
+                        [style.animation-delay.ms]="600 + i * 80"/>
+                    </svg>
+                </div>
+            </div>
+        </div>
+
+        <!-- =============================== -->
+        <!-- PAGE : BUGS                     -->
+        <!-- =============================== -->
+        <div class="admin-page" *ngIf="currentPage === 'bugs'">
+            <div class="admin-header">
+                <div>
+                    <div class="admin-title">
+                        Statistiques <span class="admin-title-accent">Bugs</span>
+                    </div>
+                    <div class="admin-subtitle">
+                        {{ totalBugs }} bug(s) détecté(s) au total —
+                        {{ totalOpen }} ouvert(s), {{ totalFixed }} corrigé(s)
+                    </div>
+                </div>
+            </div>
+
+            <!-- KPI -->
+            <div class="kpi-row kpi-row-4">
+                <div class="kpi-card">
+                    <div class="kpi-label">Bugs détectés</div>
+                    <div class="kpi-value">{{ totalBugs }}</div>
+                </div>
+                <div class="kpi-card">
+                    <div class="kpi-label">Ouverts</div>
+                    <div class="kpi-value" style="color:var(--admin-danger)">{{ totalOpen }}</div>
+                </div>
+                <div class="kpi-card">
+                    <div class="kpi-label">Corrigés</div>
+                    <div class="kpi-value" style="color:var(--admin-success)">{{ totalFixed }}</div>
+                </div>
+                <div class="kpi-card">
+                    <div class="kpi-label">Taux de correction</div>
+                    <div class="kpi-value">{{ globalFixRate }}%</div>
+                </div>
+            </div>
+
+            <!-- Charts -->
+            <div class="chart-grid chart-grid-4">
+                <div class="chart-card">
+                    <div class="chart-card-title">Par semaine</div>
+                    <div class="bar-chart">
+                        <div class="bar-col" *ngFor="let b of bugsByWeek; let i = index">
+                            <div class="bar-value">{{ b.value }}</div>
+                            <div class="bar bar-grow" [style.height.%]="b.heightPct" [style.animation-delay.ms]="i * 40"></div>
+                            <div class="bar-label">{{ b.label }}</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="chart-card">
+                    <div class="chart-card-title">Par mois</div>
+                    <div class="bar-chart">
+                        <div class="bar-col" *ngFor="let b of bugsByMonth; let i = index">
+                            <div class="bar-value">{{ b.value }}</div>
+                            <div class="bar bar-grow bar-orange" [style.height.%]="b.heightPct" [style.animation-delay.ms]="i * 40"></div>
+                            <div class="bar-label">{{ b.label }}</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="chart-card">
+                    <div class="chart-card-title">Par catégorie</div>
+                    <div class="bar-chart">
+                        <div class="bar-col" *ngFor="let b of bugsByCategory; let i = index">
+                            <div class="bar-value">{{ b.value }}</div>
+                            <div class="bar bar-grow bar-fuchsia" [style.height.%]="b.heightPct" [style.animation-delay.ms]="i * 40"></div>
+                            <div class="bar-label">{{ b.label }}</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="chart-card">
+                    <div class="chart-card-title">Par priorité</div>
+                    <div class="bar-chart">
+                        <div class="bar-col" *ngFor="let b of bugsByPriority; let i = index">
+                            <div class="bar-value">{{ b.value }}</div>
+                            <div class="bar bar-grow" [class.bar-danger]="b.label === 'CRITIQUE' || b.label === 'HIGH'"
+                            [class.bar-orange]="b.label === 'MEDIUM'"
+                            [class.bar-muted]="b.label === 'LOW'"
+                            [style.height.%]="b.heightPct" [style.animation-delay.ms]="i * 40"></div>
+                            <div class="bar-label">{{ b.label }}</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="chart-card chart-card-span-2">
+                    <div class="chart-card-title">Ouverts vs Corrigés</div>
+                    <div class="bar-chart bar-chart-wide">
+                        <div class="bar-col" *ngFor="let b of bugsByStatus; let i = index">
+                            <div class="bar-value">{{ b.value }}</div>
+                            <div class="bar bar-grow" [class.bar-danger]="b.label === 'Ouverts'"
+                            [class.bar-success]="b.label === 'Corrigés'"
+                            [style.height.%]="b.heightPct" [style.animation-delay.ms]="i * 40"></div>
+                            <div class="bar-label">{{ b.label }}</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Table récente -->
+            <div class="section-title-row"><h2>Bugs récents</h2></div>
+            <div class="admin-panel">
+                <table class="admin-table">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Nom</th>
+                            <th>URL</th>
+                            <th>Priorité</th>
+                            <th>Statut</th>
+                            <th>Détecté le</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let b of recentBugs">
+                            <td><span class="cell-id">{{ b.id }}</span></td>
+                            <td>{{ b.name }}</td>
+                            <td class="truncate">{{ b.url }}</td>
+                            <td><span class="prio-chip" [class]="'prio-' + (b.priority || '').toLowerCase()">{{ b.priority }}</span></td>
+                            <td><span class="status-chip" [class.status-open]="b.status === 'OPEN'" [class.status-fixed]="b.status === 'FIXED'">{{ b.status }}</span></td>
+                            <td>{{ b.created_at ? (b.created_at | date:'dd/MM/yy HH:mm') : '—' }}</td>
+                        </tr>
+                        <tr *ngIf="recentBugs.length === 0">
+                            <td colspan="6" class="empty-row">Aucun bug détecté pour le moment.</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- =============================== -->
+        <!-- PAGE : UTILISATEURS             -->
+        <!-- =============================== -->
+        <div class="admin-page" *ngIf="currentPage === 'users'">
+            <div class="admin-header">
+                <div>
+                    <div class="admin-title">
+                        Statistiques <span class="admin-title-accent">Utilisateurs</span>
+                    </div>
+                    <div class="admin-subtitle">
+                        {{ totalUsers }} utilisateur(s) — moyenne {{ avgSitesTestedPerUser }} sites testés/utilisateur
+                    </div>
+                </div>
+                <div class="demo-badge">⚠ Données de démonstration</div>
+            </div>
+
+            <!-- KPI -->
+            <div class="kpi-row kpi-row-4">
+                <div class="kpi-card">
+                    <div class="kpi-label">Utilisateurs actifs</div>
+                    <div class="kpi-value">{{ totalUsers }}</div>
+                </div>
+                <div class="kpi-card">
+                    <div class="kpi-label">Temps moy./session</div>
+                    <div class="kpi-value">{{ avgSessionTimeAllUsers }} min</div>
+                </div>
+                <div class="kpi-card">
+                    <div class="kpi-label">Sites testés / user</div>
+                    <div class="kpi-value">{{ avgSitesTestedPerUser }}</div>
+                </div>
+                <div class="kpi-card">
+                    <div class="kpi-label">Niveau dominant</div>
+                    <div class="kpi-value kpi-value-small">{{ usersLevelDistribution[1]?.label || '—' }}</div>
+                </div>
+            </div>
+
+            <!-- Charts -->
+            <div class="chart-grid chart-grid-3">
+                <div class="chart-card">
+                    <div class="chart-card-title">Usage hebdomadaire <span class="tag-demo">démo</span></div>
+                    <svg viewBox="0 0 560 140" class="line-chart">
+                        <polyline class="line-draw" [attr.points]="weeklyUsagePoints" fill="none" stroke="url(#lineGradUsers)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+                        <defs>
+                            <linearGradient id="lineGradUsers" x1="0%" y1="0%" x2="100%" y2="0%">
+                                <stop offset="0%" stop-color="#ff1f7a"/>
+                                <stop offset="100%" stop-color="#ff6600"/>
+                            </linearGradient>
+                        </defs>
+                        <circle class="line-dot" *ngFor="let pt of weeklyUsagePoints.split(' '); let i = index"
+                        [attr.cx]="pt.split(',')[0]" [attr.cy]="pt.split(',')[1]" r="4"
+                        [style.animation-delay.ms]="600 + i * 100"/>
+                    </svg>
+                    <div class="line-chart-labels">
+                        <span *ngFor="let d of weeklyUsageDayLabels">{{ d }}</span>
+                    </div>
+                </div>
+                <div class="chart-card">
+                    <div class="chart-card-title">Répartition par âge</div>
+                    <div class="bar-chart">
+                        <div class="bar-col" *ngFor="let b of usersAgeDistribution; let i = index">
+                            <div class="bar-value">{{ b.value }}</div>
+                            <div class="bar bar-grow bar-fuchsia" [style.height.%]="b.heightPct" [style.animation-delay.ms]="i * 60"></div>
+                            <div class="bar-label">{{ b.label }}</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="chart-card">
+                    <div class="chart-card-title">Répartition par niveau</div>
+                    <div class="bar-chart">
+                        <div class="bar-col" *ngFor="let b of usersLevelDistribution; let i = index">
+                            <div class="bar-value">{{ b.value }}</div>
+                            <div class="bar bar-grow bar-orange" [style.height.%]="b.heightPct" [style.animation-delay.ms]="i * 60"></div>
+                            <div class="bar-label">{{ b.label }}</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Table utilisateurs -->
+            <div class="section-title-row"><h2>Liste des utilisateurs</h2></div>
+            <div class="search-row">
+                <input class="search-input" type="text" placeholder="🔍 Rechercher par nom, email, niveau, ID..." [(ngModel)]="userSearch">
+                <span class="search-count">{{ filteredUsers.length }} / {{ totalUsers }}</span>
+            </div>
+            <div class="admin-panel">
+                <table class="admin-table">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Nom</th>
+                            <th>Email</th>
+                            <th>Âge</th>
+                            <th>Niveau</th>
+                            <th>Temps moy./session</th>
+                            <th>Sites testés</th>
+                            <th>Dernière activité</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let u of filteredUsers">
+                            <td><span class="cell-id">{{ u.id }}</span></td>
+                            <td>{{ u.name }}</td>
+                            <td>{{ u.email }}</td>
+                            <td>{{ u.age }}</td>
+                            <td><span class="level-chip" [class]="'level-' + u.level.toLowerCase()">{{ u.level }}</span></td>
+                            <td>{{ u.avgSessionMin }} min</td>
+                            <td>{{ u.sitesTested }}</td>
+                            <td>{{ u.lastActive }}</td>
+                        </tr>
+                        <tr *ngIf="filteredUsers.length === 0">
+                            <td colspan="8" class="empty-row">Aucun utilisateur ne correspond à cette recherche.</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+    </main>
+</div>
